@@ -75,7 +75,7 @@ public abstract class RobustEstimator<D,M,N extends RobustEstimator.Monitor<D,M>
 	 * the fitter couldn't produce a model from it
 	 */
 	protected M performCheck(Fitter<D,M> fitter, List<D> data, N monitor) throws NoModelFoundException {
-		if (fitter.getMinimalDataSetSize()<data.size())
+		if (fitter.getMinimalDataSetSize()>data.size())
 			throw new NoModelFoundException("Not enough data to compute model");
 		else if (fitter.getMinimalDataSetSize()==data.size()) {
 			M model=fitter.computeModel(data);
