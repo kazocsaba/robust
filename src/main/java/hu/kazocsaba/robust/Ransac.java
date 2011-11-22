@@ -22,6 +22,9 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,RobustEstimator.Monit
 	
 	/** The error threshold above which a data element is considered outlier. */
 	private double inlierThreshold;
+	
+	/** The source of randomness. */
+	private Random rnd=new Random();;
 
 	/**
 	 * Creates a new instance.
@@ -44,12 +47,21 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,RobustEstimator.Monit
 		this.successProbability = successProbability;
 	}
 	
-	
+	/**
+	 * Sets the (only) source of randomness used by the algorithm. This function can be used to ensure deterministic
+	 * execution: if the configuration of {@code Ransac} is not changed, and the same input is provided, than the
+	 * behaviour of the algorithm will be exactly the same as long as the calls to {@code perform} are preceded by
+	 * setting {@code Random} instances which produce identical sequences of numbers.
+	 * @param random the source of randomness this {@code Ransac} instance will use
+	 */
+	public void setRandom(Random random) {
+		if (random == null) throw new NullPointerException();
+		rnd = random;
+	}
 	
 	@Override
 	public M perform(Fitter<D, M> fitter, List<D> data, Monitor<D, M> monitor) throws NoModelFoundException {
 		performCheck(fitter, data, monitor);
-		Random rnd=new Random();
 		
 		List<D> samples=new ArrayList<D>(data.size()/2);
 		BitSet sampleMask=new BitSet(data.size());
