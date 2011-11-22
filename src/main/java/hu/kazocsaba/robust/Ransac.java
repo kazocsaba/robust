@@ -39,6 +39,9 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 	 * and the recomputed model. (Note that it is possible for this recomputed model to be {@code null} too; in this
 	 * case the algorithm will use the original model for the inlier set.
 	 * <p>
+	 * Finally, before the algorithm returns a model after successful execution,
+	 * {@link Monitor#success(Object, ElementSet)} is called with the inlier set and the final model.
+	 * <p>
 	 * This class and provides its functions with empty implementations, so that subclasses only need
 	 * to implement the ones they are interested in.
 	 * @param <D> the type of the data elements
