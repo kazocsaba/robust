@@ -92,7 +92,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 	
 	/**
 	 * Sets the (only) source of randomness used by the algorithm. This function can be used to ensure deterministic
-	 * execution: if the configuration of {@code Ransac} is not changed, and the same input is provided, than the
+	 * execution: if the configuration of {@code Ransac} is not changed, and the same input is provided, then the
 	 * behaviour of the algorithm will be exactly the same as long as the calls to {@code perform} are preceded by
 	 * setting {@code Random} instances which produce identical sequences of numbers.
 	 * @param random the source of randomness this {@code Ransac} instance will use
