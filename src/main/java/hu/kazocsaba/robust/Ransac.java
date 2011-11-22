@@ -97,16 +97,22 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,RobustEstimator.Monit
 				}
 				if (samples.size()>bestModelSupport) {
 					// this sample set has more inliers
-					bestModel=fitter.computeModel(samples);
-					if (bestModel==null) {
-						/* 
-						 * The fitter successfully computed a model from a subset of this data but failed now.
-						 * The extra 'inliers' have somehow brought the data set to a degenerate case. This is
-						 * highly unlikely but not impossible.
-						 * 
-						 * My decision now is that we just publish the model build from the minimal set. That
-						 * one still has all the samples as inliers anyway.
-						 */
+					if (samples.size()>fitter.getMinimalDataSetSize()) {
+						bestModel=fitter.computeModel(samples);
+						if (bestModel==null) {
+							/* 
+							 * The fitter successfully computed a model from a subset of this data but failed now.
+							 * The extra 'inliers' have somehow brought the data set to a degenerate case. This is
+							 * highly unlikely but not impossible.
+							 * 
+							 * My decision now is that we just publish the model build from the minimal set. That
+							 * one still has all the samples as inliers anyway.
+							 */
+							bestModel=model;
+						}
+					} else {
+						// This is still a minimal set, no extra inliers were added.
+						// No need to regenerate model.
 						bestModel=model;
 					}
 					bestModelSupport=samples.size();
