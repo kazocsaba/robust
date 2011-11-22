@@ -18,6 +18,9 @@ public abstract class RobustEstimator<D,M,N extends RobustEstimator.Monitor<D,M>
 	 * <p>
 	 * Unless otherwise stated, monitor subclasses are not allowed to alter any objects passed to their functions,
 	 * or to alter the state of the estimator during execution.
+	 * <p>
+	 * This class and its subclasses provide their functions with empty implementations, so that subclasses only need
+	 * to implement the ones they are interested in.
 	 * @param <D> the type of the data elements
 	 * @param <M> the type of the model
 	 */
