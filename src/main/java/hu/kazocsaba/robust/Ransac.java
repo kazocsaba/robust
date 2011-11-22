@@ -10,7 +10,7 @@ import java.util.Random;
  * RANSAC robust fitting algorithm.
  * @see "Martin A. Fischler and Robert C. Bolles: Random Sample Consensus: A Paradigm for
  * Model Fitting with Applications to Image Analysis and Automated Cartography (in Communications
- * of the ACM Magazine, Volume 24 Issue 6, June 1981"
+ * of the ACM Magazine, Volume 24 Issue 6, June 1981)"
  * @param <D> the type of the data elements
  * @param <M> the type of the model
  * @author Kazó Csaba
