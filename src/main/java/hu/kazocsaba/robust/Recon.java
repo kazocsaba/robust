@@ -92,7 +92,7 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 	 * Monitor class for {@link Recon}.
 	 * <p>
 	 * The algorithm iteratively generates minimal sample sets, then fits a model to them. For each of these steps,
-	 * {@link #modelFromMinimalSampleSet(ElementSet, Object)} is called with the model the fitter returned, possibly
+	 * {@link #modelFromMinimalSampleSet(BitSet, Object)} is called with the model the fitter returned, possibly
 	 * {@code null}.
 	 * <p>
 	 * Then this new model is checked with each of the previously generated ones for alpha-consistency. If an existing
@@ -101,7 +101,7 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 	 * 
 	 * <p>
 	 * The search terminates successfully when three mutually consistent models are found. This is indicated by a call to
-	 * {@link Monitor#success(Object, ElementSet)} with the common consistent data as the inlier set and the final model.
+	 * {@link Monitor#success(Object, BitSet)} with the common consistent data as the inlier set and the final model.
 	 * <p>
 	 * This class and provides its functions with empty implementations, so that subclasses only need
 	 * to implement the ones they are interested in.
@@ -115,7 +115,7 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 		 * @param samples the minimal sample set
 		 * @param model the model computed by the fitter; may be {@code null}
 		 */
-		public void modelFromMinimalSampleSet(ElementSet samples, M model) {}
+		public void modelFromMinimalSampleSet(BitSet samples, M model) {}
 		
 		/**
 		 * Called after a new model has been found consistent with a previous one.
@@ -169,7 +169,7 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 
 			M model=fitter.computeModel(samples);
 			if (monitor!=null)
-				monitor.modelFromMinimalSampleSet(new BitSetElementSet(sampleMask, data.size()), model);
+				monitor.modelFromMinimalSampleSet(sampleMask, model);
 
 			if (model==null) {
 				modelFailCount++;
@@ -222,7 +222,7 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 								if (inlierModel==null)
 									inlierModel=model;
 								if (monitor!=null)
-									monitor.success(inlierModel, new BitSetElementSet(commonBetweenAllThree, data.size()));
+									monitor.success(inlierModel, commonBetweenAllThree);
 								return inlierModel;
 							}
 						}

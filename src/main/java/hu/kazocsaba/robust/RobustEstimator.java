@@ -1,5 +1,6 @@
 package hu.kazocsaba.robust;
 
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -27,37 +28,12 @@ public abstract class RobustEstimator<D,M,N extends RobustEstimator.Monitor<D,M>
 	public static class Monitor<D,M> {
 		/**
 		 * Called when the estimator terminates successfully and is about to return a model.
+		 * @param model the model that will be the return value of the estimator
 		 * @param inliers the data elements that the algorithm eventually decided were inliers to the final model
 		 */
-		public void success(M model, ElementSet inliers) {}
+		public void success(M model, BitSet inliers) {}
 	}
 	
-	private static class AllElements implements ElementSet {
-		final int size;
-
-		public AllElements(int size) {
-			this.size = size;
-		}
-
-		@Override
-		public int size() {
-			return size;
-		}
-
-		@Override
-		public boolean contains(int index) {
-			if (index<0 || index>=size) throw new IndexOutOfBoundsException();
-			return true;
-		}
-
-		@Override
-		public int nextElement(int fromIndex) {
-			if (fromIndex<0) throw new IndexOutOfBoundsException();
-			if (fromIndex>=size) return -1;
-			return fromIndex;
-		}
-		
-	}
 	
 	/**
 	 * Performs some initial checks on the input. This function can be used by subclasses to potentially shortcut
@@ -84,7 +60,11 @@ public abstract class RobustEstimator<D,M,N extends RobustEstimator.Monitor<D,M>
 			M model=fitter.computeModel(data);
 			if (model==null)
 				throw new NoModelFoundException("Fitter failed to compute model from data set");
-			if (monitor!=null) monitor.success(model, new AllElements(data.size()));
+			if (monitor!=null) {
+				BitSet everything=new BitSet(data.size());
+				everything.set(0, data.size());
+				monitor.success(model, everything);
+			}
 			return model;
 		}
 		return null;

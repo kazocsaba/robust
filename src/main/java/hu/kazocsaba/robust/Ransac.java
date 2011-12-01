@@ -32,15 +32,15 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 	 * Monitor class for {@link Ransac}.
 	 * <p>
 	 * The algorithm iteratively generates minimal sample sets, then fits a model to them. For each of these steps,
-	 * {@link #modelFromMinimalSampleSet(ElementSet, Object)} is called with the model the fitter returned, possibly
+	 * {@link #modelFromMinimalSampleSet(BitSet, Object)} is called with the model the fitter returned, possibly
 	 * {@code null}. If a model could be computed, then Ransac adds to the element set all the inliers, and if their
 	 * number is greater than the previous best (and also greater than the minimal set size), it recomputes
-	 * the model. After this, {@link #modelFromInliers(Object, ElementSet, Object)} is called with both the original
+	 * the model. After this, {@link #modelFromInliers(Object, BitSet, Object)} is called with both the original
 	 * and the recomputed model. (Note that it is possible for this recomputed model to be {@code null} too; in this
 	 * case the algorithm will use the original model for the inlier set.
 	 * <p>
 	 * Finally, before the algorithm returns a model after successful execution,
-	 * {@link Monitor#success(Object, ElementSet)} is called with the inlier set and the final model.
+	 * {@link Monitor#success(Object, BitSet)} is called with the inlier set and the final model.
 	 * <p>
 	 * This class and provides its functions with empty implementations, so that subclasses only need
 	 * to implement the ones they are interested in.
@@ -54,7 +54,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 		 * @param samples the minimal sample set
 		 * @param model the model computed by the fitter; may be {@code null}
 		 */
-		public void modelFromMinimalSampleSet(ElementSet samples, M model) {}
+		public void modelFromMinimalSampleSet(BitSet samples, M model) {}
 		/**
 		 * Called after the algorithm found a new best set of inliers. The fitter produced {@code originalModel} from
 		 * the minimal data set. This set was extended with the inliers from the entire data set, producing
@@ -66,7 +66,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 		 * @param model the model computed from {@code inliers}; may be {@code null}, in which case {@code originalModel}
 		 * will be used by the algorithm instead
 		 */
-		public void modelFromInliers(M originalModel, ElementSet inliers, M model) {}
+		public void modelFromInliers(M originalModel, BitSet inliers, M model) {}
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 			M model=fitter.computeModel(samples);
 			
 			if (monitor!=null)
-				monitor.modelFromMinimalSampleSet(new BitSetElementSet(sampleMask, samples.size()), model);
+				monitor.modelFromMinimalSampleSet(sampleMask, model);
 			
 			if (model==null) {
 				modelFailCount++;
@@ -160,7 +160,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 						bestModel=fitter.computeModel(samples);
 						
 						if (monitor!=null)
-							monitor.modelFromInliers(model, new BitSetElementSet(sampleMask, samples.size()), bestModel);
+							monitor.modelFromInliers(model, sampleMask, bestModel);
 						
 						if (bestModel==null) {
 							/* 
@@ -179,7 +179,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 						bestModel=model;
 						
 						if (monitor!=null)
-							monitor.modelFromInliers(model, new BitSetElementSet(sampleMask, samples.size()), bestModel);
+							monitor.modelFromInliers(model, sampleMask, bestModel);
 					}
 					bestModelSupport=samples.size();
 					bestModelInliers.clear();
@@ -193,7 +193,7 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 			}
 		}
 		if (monitor!=null)
-			monitor.success(bestModel, new BitSetElementSet(bestModelInliers, bestModelSupport));
+			monitor.success(bestModel, bestModelInliers);
 		return bestModel;
 	}
 	
