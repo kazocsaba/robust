@@ -99,4 +99,15 @@ public abstract class RobustEstimator<D,M,N extends RobustEstimator.Monitor<D,M>
 	 * @throws NoModelFoundException if the estimator couldn't produce a model
 	 */
 	public abstract M perform(Fitter<D,M> fitter, List<D> data, N monitor) throws NoModelFoundException;
+	
+	/**
+	 * Executes the estimator algorithm.
+	 * @param fitter the fitter used to compute a model and qualify data elements
+	 * @param data the data set
+	 * @return the model produced as the result of this algorithm; never {@code null}
+	 * @throws NoModelFoundException if the estimator couldn't produce a model
+	 */
+	public M perform(Fitter<D,M> fitter, List<D> data) throws NoModelFoundException {
+		return perform(fitter, data, null);
+	}
 }
