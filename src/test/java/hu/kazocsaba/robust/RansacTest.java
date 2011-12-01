@@ -47,4 +47,22 @@ public class RansacTest {
 			assertEquals(8, result);
 		}
 	}
+	@Test
+	public void testMinimal() throws NoModelFoundException {
+		assertEquals(2, new Ransac<Integer, Integer>(0).perform(new Fitter<Integer, Integer>(2) {
+
+			@Override
+			public double getError(Integer model, Integer datum) {
+				return Math.abs(model-datum);
+			}
+
+			@Override
+			public Integer computeModel(List<Integer> data) {
+				int sum = 0;
+				for (int d : data)
+					sum += d;
+				return sum / data.size();
+			}
+		}, Arrays.asList(1, 3)).intValue());
+	}
 }

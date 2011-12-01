@@ -135,6 +135,11 @@ public final class Recon<D,M> extends RobustEstimator<D, M, Recon.Monitor<D, M>>
 	
 	@Override
 	public M perform(Fitter<D, M> fitter, List<D> data, Monitor<D, M> monitor) throws NoModelFoundException {
+		{
+			M bestModel=performCheck(fitter, data, monitor);
+			if (bestModel!=null) return bestModel;
+		}
+		
 		List<D> samples=new ArrayList<D>(data.size()/2);
 		BitSet sampleMask=new BitSet(data.size());
 		int modelFailCount=0; // the number of random sample sets which failed to yield a model

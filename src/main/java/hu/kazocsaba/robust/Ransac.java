@@ -104,7 +104,8 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 	
 	@Override
 	public M perform(Fitter<D, M> fitter, List<D> data, Monitor<D, M> monitor) throws NoModelFoundException {
-		performCheck(fitter, data, monitor);
+		M bestModel=performCheck(fitter, data, monitor);
+		if (bestModel!=null) return bestModel;
 		
 		List<D> samples=new ArrayList<D>(data.size()/2);
 		BitSet sampleMask=new BitSet(data.size());
@@ -112,7 +113,6 @@ public final class Ransac<D,M> extends RobustEstimator<D,M,Ransac.Monitor<D,M>> 
 		int iterationCount=1; // we will adjust this based on our guess of the outlier ratio
 		int modelFailCount=0; // the number of random sample sets which failed to yield a model
 		
-		M bestModel=null;
 		int bestModelSupport=0;
 		BitSet bestModelInliers=new BitSet(data.size());
 		
